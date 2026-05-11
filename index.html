@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Fuego Entretenimento • Dashboard</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -15,22 +19,23 @@
             position: relative;
         }
 
-        /* Imagem de fundo personalizada (PNG) */
-body::before {
-    content: "";
-    background-image: url('https://parakakau.github.io/fuego/images/bg-fuego.png'); /* ← seu caminho */
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: bottom right;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 70%;
-    height: 70%;
-    opacity: 0.1;          /* comece com 0.1, depois ajuste */
-    pointer-events: none;
-    z-index: 0;
-}
+        /* Imagem de fundo personalizada - ajuste opacity e position conforme desejar */
+        body::before {
+            content: "";
+            background-image: url('https://parakakau.github.io/fuego/images/bg-fuego.png'); /* SUBSTITUA PELO LINK DA SUA IMAGEM */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* Layout com menu lateral fixo */
         .app-container {
             display: flex;
@@ -111,7 +116,7 @@ body::before {
         /* Conteúdo principal */
         .main-content {
             flex: 1;
-            padding: 1.5rem;
+            padding: 1rem;
             overflow-x: auto;
         }
         .header-main {
@@ -122,20 +127,20 @@ body::before {
             flex-wrap: wrap;
         }
         .header-main h1 {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             font-weight: 600;
         }
         .current-filter {
             background: #1e293b;
-            padding: 0.3rem 1rem;
+            padding: 0.4rem 1.2rem;
             border-radius: 2rem;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
 
         /* Kanban colunas */
         .kanban-board {
             display: flex;
-            gap: 1.2rem;
+            gap: 1rem;
             overflow-x: auto;
             padding-bottom: 1rem;
         }
@@ -143,8 +148,8 @@ body::before {
             background: rgba(30, 41, 59, 0.5);
             backdrop-filter: blur(4px);
             border-radius: 1rem;
-            min-width: 280px;
-            width: 300px;
+            min-width: 320px;
+            width: 340px;
             flex-shrink: 0;
             border: 1px solid #2d3a4a;
             display: flex;
@@ -166,12 +171,12 @@ body::before {
             padding: 0.8rem;
             display: flex;
             flex-direction: column;
-            gap: 0.7rem;
+            gap: 0.8rem;
         }
         .card-item {
             background: #0f172a;
-            border-radius: 0.8rem;
-            padding: 0.7rem;
+            border-radius: 0.9rem;
+            padding: 0.9rem;
             cursor: pointer;
             transition: 0.1s;
             border-left: 3px solid #4f46e5;
@@ -182,7 +187,7 @@ body::before {
         }
         .card-title {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             margin-bottom: 0.2rem;
         }
         .card-labels {
@@ -192,16 +197,17 @@ body::before {
             flex-wrap: wrap;
         }
         .label-badge {
-            font-size: 0.6rem;
-            padding: 0.1rem 0.4rem;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 1rem;
             background: #334155;
             color: #e2e8f0;
         }
         .card-desc {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: #94a3b8;
-            margin-top: 0.2rem;
+            margin-top: 0.3rem;
+            line-height: 1.3;
         }
         .empty-column {
             text-align: center;
@@ -210,7 +216,7 @@ body::before {
             font-size: 0.8rem;
         }
 
-        /* Modal */
+        /* Modal de formulário e de detalhes - ajustado para maior conforto */
         .modal {
             display: none;
             position: fixed;
@@ -224,11 +230,11 @@ body::before {
         }
         .modal-content {
             background: #0f172a;
-            max-width: 600px;
-            width: 90%;
+            max-width: 700px;
+            width: 95%;
             max-height: 85vh;
             border-radius: 1.5rem;
-            padding: 1.5rem;
+            padding: 1.8rem;
             overflow-y: auto;
             border: 1px solid #334155;
             box-shadow: 0 20px 35px -12px black;
@@ -236,12 +242,43 @@ body::before {
         .modal-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
         .close-modal {
             font-size: 1.8rem;
             cursor: pointer;
             color: #94a3b8;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #cbd5e1;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            background: #1e293b;
+            color: #f1f5f9;
+            font-size: 0.95rem;
+        }
+        button[type="submit"] {
+            background: #4f46e5;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            margin-top: 0.5rem;
         }
         .comments-section {
             margin-top: 1.5rem;
@@ -260,7 +297,7 @@ body::before {
             color: #facc15;
         }
         .comment-text {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             margin-top: 0.2rem;
         }
         .new-comment-form {
@@ -272,21 +309,22 @@ body::before {
             flex: 1;
             background: #1e293b;
             border: 1px solid #4f46e5;
-            padding: 0.6rem;
+            padding: 0.6rem 1rem;
             border-radius: 2rem;
             color: white;
         }
         .new-comment-form button {
             background: #4f46e5;
             border: none;
-            padding: 0 1rem;
+            padding: 0 1.2rem;
             border-radius: 2rem;
             cursor: pointer;
+            color: white;
         }
-
         @media (max-width: 768px) {
             .sidebar { width: 200px; padding: 1rem; }
-            .main-content { padding: 1rem; }
+            .main-content { padding: 0.8rem; }
+            .column { min-width: 280px; width: 300px; }
         }
     </style>
 </head>
@@ -323,37 +361,37 @@ body::before {
             <span class="close-modal" id="closeModalBtn">&times;</span>
         </div>
         <form id="demandaForm">
-            <div style="margin-bottom: 0.8rem;">
+            <div class="form-group">
                 <label>Nome do Cliente *</label>
-                <input type="text" name="nome_cliente" required style="width:100%;">
+                <input type="text" name="nome_cliente" required>
             </div>
-            <div style="margin-bottom: 0.8rem;">
-                <label>Descrição *</label>
-                <textarea name="descricao" rows="2" required style="width:100%;"></textarea>
+            <div class="form-group">
+                <label>Descrição da Tarefa *</label>
+                <textarea name="descricao" rows="3" required></textarea>
             </div>
-            <div style="margin-bottom: 0.8rem;">
-                <label>Link do material</label>
-                <input type="url" name="link_material" style="width:100%;">
+            <div class="form-group">
+                <label>Link do Material Bruto</label>
+                <input type="url" name="link_material" placeholder="https://...">
             </div>
-            <div style="margin-bottom: 0.8rem;">
-                <label>Data desejada</label>
-                <input type="date" name="data_entrega" style="width:100%;">
+            <div class="form-group">
+                <label>Data de Entrega Desejada</label>
+                <input type="date" name="data_entrega">
             </div>
-            <div style="margin-bottom: 0.8rem;">
+            <div class="form-group">
                 <label>Comentários</label>
-                <textarea name="comentarios" rows="2" style="width:100%;"></textarea>
+                <textarea name="comentarios" rows="2"></textarea>
             </div>
-            <div style="margin-bottom: 0.8rem;">
+            <div class="form-group">
                 <label>Tipo de serviço</label>
-                <select name="pergunta" style="width:100%;">
+                <select name="pergunta">
                     <option value="Opção 1">🎥 Edição de vídeo</option>
                     <option value="Opção 2">📸 Fotografia</option>
                     <option value="Opção 3">🎨 Design</option>
                     <option value="Outro">⚙️ Outro</option>
                 </select>
             </div>
-            <button type="submit" style="background:#4f46e5; border:none; padding:0.6rem; border-radius:2rem; width:100%;">Enviar</button>
-            <div id="loadingModal" style="display:none; text-align:center; margin-top:0.5rem;">Enviando...</div>
+            <button type="submit">Enviar demanda</button>
+            <div id="loadingModal" style="display:none; text-align:center; margin-top:0.8rem;">Enviando...</div>
         </form>
     </div>
 </div>
@@ -367,17 +405,18 @@ body::before {
 
 <script>
     // ========== CONFIGURAÇÃO ==========
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQRrto89RvqbypZCRXVgxxLr6-4j4EcBfBRSvqMphtCVNM8DcTc85LxA1dk0l_tCtL/exec'; // SUBSTITUA
+    // ⚠️ SUBSTITUA PELA URL DO SEU GOOGLE APPS SCRIPT (Web App)
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQRrto89RvqbypZCRXVgxxLr6-4j4EcBfBRSvqMphtCVNM8DcTc85LxA1dk0l_tCtL/exec';
     
-    let todasListas = [];      // array de listas do Trello
-    let todosCards = [];       // array de cards
-    let listaFiltradaId = 'all';   // id da lista selecionada no menu
+    let todasListas = [];
+    let todosCards = [];
+    let listaFiltradaId = 'all';
 
     const boardContainer = document.getElementById('kanbanBoard');
     const filterMenu = document.getElementById('listFilterMenu');
     const currentFilterLabel = document.getElementById('currentFilterLabel');
 
-    // Abrir modal de nova demanda
+    // Modal de formulário
     const modalForm = document.getElementById('demandaModal');
     const openBtn = document.getElementById('openModalBtn');
     const closeBtn = document.getElementById('closeModalBtn');
@@ -397,35 +436,38 @@ body::before {
             const res = await fetch(SCRIPT_URL, { method: 'POST', body: params });
             const data = await res.json();
             if (data.status === 'success') {
-                alert('✅ Demanda criada!');
+                alert('✅ Demanda criada com sucesso!');
                 form.reset();
                 modalForm.style.display = 'none';
                 carregarBoard();
             } else {
-                alert('Erro: ' + JSON.stringify(data));
+                alert('❌ Erro: ' + JSON.stringify(data));
             }
-        } catch (err) { alert('Erro conexão'); }
-        finally { loading.style.display = 'none'; }
+        } catch (err) {
+            alert('⚠️ Falha na conexão: ' + err.message);
+        } finally {
+            loading.style.display = 'none';
+        }
     };
 
     // Buscar listas e cards
     async function carregarBoard() {
-        boardContainer.innerHTML = '<div>Carregando...</div>';
+        boardContainer.innerHTML = '<div style="text-align:center;">🔄 Carregando...</div>';
         try {
             const response = await fetch(`${SCRIPT_URL}?action=board`);
             const data = await response.json();
+            if (data.error) throw new Error(data.error);
             todasListas = data.lists;
             todosCards = data.cards;
             construirMenuLateral();
             renderKanban();
         } catch (err) {
-            boardContainer.innerHTML = `<div>Erro: ${err.message}</div>`;
+            boardContainer.innerHTML = `<div style="color:#f87171;">Erro: ${err.message}</div>`;
         }
     }
 
     function construirMenuLateral() {
-        // Limpa menu, mantém apenas o "Todas as listas"
-        const ul = filterMenu.querySelector('ul') || filterMenu;
+        const ul = filterMenu;
         ul.innerHTML = '<li><button class="filter-btn active" data-list-id="all">📋 Todas as listas</button></li>';
         todasListas.forEach(list => {
             const li = document.createElement('li');
@@ -443,7 +485,6 @@ body::before {
             li.appendChild(btn);
             ul.appendChild(li);
         });
-        // Reseta o evento do botão "Todas as listas"
         const allBtn = document.querySelector('.filter-btn[data-list-id="all"]');
         if (allBtn) {
             allBtn.onclick = () => {
@@ -458,22 +499,16 @@ body::before {
 
     function renderKanban() {
         boardContainer.innerHTML = '';
-        // Filtra listas: se listaFiltradaId for 'all', mostra todas; senão, só a selecionada
-        let listasParaExibir = todasListas;
-        if (listaFiltradaId !== 'all') {
-            listasParaExibir = todasListas.filter(l => l.id === listaFiltradaId);
-        }
+        let listasParaExibir = (listaFiltradaId === 'all') ? todasListas : todasListas.filter(l => l.id === listaFiltradaId);
         if (listasParaExibir.length === 0) {
             boardContainer.innerHTML = '<div>Nenhuma lista encontrada.</div>';
             return;
         }
-        // Agrupa cards por lista
         const cardsPorLista = {};
         todosCards.forEach(card => {
             if (!cardsPorLista[card.idList]) cardsPorLista[card.idList] = [];
             cardsPorLista[card.idList].push(card);
         });
-
         listasParaExibir.forEach(list => {
             const cards = cardsPorLista[list.id] || [];
             const colDiv = document.createElement('div');
@@ -481,7 +516,7 @@ body::before {
             colDiv.innerHTML = `
                 <div class="column-header">
                     <span>${escapeHtml(list.name)}</span>
-                    <span style="background:#334155; padding:0.2rem 0.5rem; border-radius:1rem;">${cards.length}</span>
+                    <span style="background:#334155; padding:0.2rem 0.6rem; border-radius:1rem;">${cards.length}</span>
                 </div>
                 <div class="cards-list" id="list-${list.id}">
                     ${cards.length === 0 ? '<div class="empty-column">Sem cards</div>' : ''}
@@ -492,16 +527,15 @@ body::before {
                 const cardDiv = document.createElement('div');
                 cardDiv.className = 'card-item';
                 cardDiv.onclick = () => abrirModalDetalhes(card.id);
-                // Etiquetas
                 let labelsHtml = '';
                 if (card.labels && card.labels.length) {
                     labelsHtml = `<div class="card-labels">${card.labels.map(lbl => `<span class="label-badge">${escapeHtml(lbl.name || 'label')}</span>`).join('')}</div>`;
                 }
-                const descPreview = card.desc ? card.desc.substring(0, 80) : '';
+                const descPreview = card.desc ? card.desc.substring(0, 100) : '';
                 cardDiv.innerHTML = `
                     <div class="card-title">${escapeHtml(card.name)}</div>
                     ${labelsHtml}
-                    <div class="card-desc">${escapeHtml(descPreview)}...</div>
+                    <div class="card-desc">${escapeHtml(descPreview)}${card.desc && card.desc.length > 100 ? '…' : ''}</div>
                 `;
                 cardsContainer.appendChild(cardDiv);
             });
@@ -520,7 +554,6 @@ body::before {
             if (data.error) throw new Error(data.error);
             const card = data.card;
             const comments = data.comments || [];
-            // Monta o conteúdo
             let labelsHtml = '';
             if (card.labels && card.labels.length) {
                 labelsHtml = `<div style="margin:0.5rem 0;">${card.labels.map(lbl => `<span class="label-badge">${escapeHtml(lbl.name)}</span>`).join('')}</div>`;
@@ -548,9 +581,7 @@ body::before {
                     </div>
                 </div>
             `;
-            // Fechar modal
             document.getElementById('closeCardModal').onclick = () => modal.style.display = 'none';
-            // Enviar comentário
             const sendBtn = document.getElementById('sendCommentBtn');
             const commentInput = document.getElementById('newCommentText');
             sendBtn.onclick = async () => {
@@ -566,7 +597,6 @@ body::before {
                     const result = await res.json();
                     if (result.status === 'success') {
                         commentInput.value = '';
-                        // Recarrega os comentários para mostrar o novo
                         abrirModalDetalhes(cardId);
                     } else {
                         alert('Erro ao comentar');
@@ -589,7 +619,6 @@ body::before {
         });
     }
 
-    // Fechar modais globalmente
     window.onclick = (e) => {
         if (e.target === document.getElementById('cardModal')) {
             document.getElementById('cardModal').style.display = 'none';
@@ -597,7 +626,7 @@ body::before {
     };
 
     carregarBoard();
-    setInterval(carregarBoard, 60000); // atualiza a cada 60s
+    setInterval(carregarBoard, 60000);
 </script>
 </body>
 </html>
