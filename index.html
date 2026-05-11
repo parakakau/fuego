@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuego Entretenimento - Central de Demandas</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f4; }
+        h1, h2 { color: #333; }
+        form { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #0079bf; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin-top: 15px; cursor: pointer; }
+        button:hover { background: #005f8c; }
+        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 6px; border-left: 5px solid #0079bf; }
+        .card h3 { margin: 0 0 5px; }
+        .card p { margin: 5px 0; color: #555; }
+        #loading { display: none; color: #0079bf; }
+    </style>
+</head>
+<body>
+    <h1>📝 Abrir nova demanda</h1>
+    <form id="demandaForm">
+        <label>Nome do Cliente *</label>
+        <input type="text" name="nome_cliente" required>
+
+        <label>Descrição da Tarefa *</label>
+        <textarea name="descricao" rows="3" required></textarea>
+
+        <label>Link do Material Bruto</label>
+        <input type="url" name="link_material" placeholder="https://...">
+
+        <label>Data de Entrega Desejada</label>
+        <input type="date" name="data_entrega">
+
+        <label>Comentários</label>
+        <textarea name="comentarios" rows="2"></textarea>
+
+        <label>Tipo de serviço</label>
+        <select name="pergunta">
+            <option value="Opção 1">Edição de vídeo</option>
+            <option value="Opção 2">Fotografia</option>
+            <option value="Opção 3">Design</option>
+            <option value="Outro">Outro</option>
+        </select>
+
+        <button type="submit">Enviar demanda</button>
+        <div id="loading">Enviando...</div>
+    </form>
+
+    <h2>📋 Fila de demandas</h2>
+    <div id="cardsList"></div>
+
+    <script>
+        // Substitua pela URL do seu Web App (publicado)
+        const SCRIPT_URL = 'https://script.google.com/macros/s/SEU_ID/exec';
+
+        const form = document.getElementById('demandaForm');
+        const loading = document.getElementById('loading');
+        const cardsDiv = document.getElementById('cardsList');
+
+        // Envio do formulário
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            loading.style.display = 'block';
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: params
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    alert('✅ Demanda criada com sucesso!');
+                    form.reset();
+                    carregarCards();
+                } else {
+                    alert('❌ Erro: ' + JSON.stringify(result));
+                }
+            } catch (err) {
+                alert('Erro de conexão: ' + err.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        };
+
+        // Carregar cards da fila
+        async function carregarCards() {
+            cardsDiv.innerHTML = '<p>Carregando...</p>';
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=cards`);
+                const cards = await response.json();
+                if (cards.length === 0) {
+                    cardsDiv.innerHTML = '<p>Nenhuma demanda no momento.</p>';
+                    return;
+                }
+                cardsDiv.innerHTML = '';
+                cards.forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = 'card';
+                    cardEl.innerHTML = `
+                        <h3>${escapeHtml(card.name)}</h3>
+                        <p><strong>Descrição:</strong> ${escapeHtml(card.desc.substring(0, 150))}...</p>
+                        <p><strong>Link:</strong> <a href="${card.url}" target="_blank">Ver no Trello</a></p>
+                    `;
+                    cardsDiv.appendChild(cardEl);
+                });
+            } catch (err) {
+                cardsDiv.innerHTML = '<p>Erro ao carregar a fila.</p>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        carregarCards();
+    </script>
+</body>
+</html>
