@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Fuego Entretenimento • Dashboard</title>
+    <title>Fuego Entretenimento • Esteira de Edição</title>
     <style>
         * {
             margin: 0;
@@ -31,7 +31,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.15;
+            opacity: 0.05;
             pointer-events: none;
             z-index: 0;
         }
@@ -42,44 +42,48 @@
             min-height: 100vh;
             position: relative;
             z-index: 2;
+            flex-direction: column;
         }
 
-        /* Menu lateral */
+        /* Menu lateral (sidebar mais larga e com fonte maior) */
         .sidebar {
-            width: 260px;
-            background: rgba(15, 23, 42, 0.7);
+            width: 320px;          /* aumentado de 260px */
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(12px);
             border-right: 1px solid #1e293b;
-            padding: 2rem 1.2rem;
+            padding: 2rem 1.5rem;
             position: sticky;
             top: 0;
             height: 100vh;
             overflow-y: auto;
         }
         .sidebar h2 {
-            font-size: 1.3rem;
+            font-size: 2rem;       /* maior */
+            font-weight: 700;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             color: #facc15;
+            letter-spacing: 1px;
         }
         .sidebar nav ul {
             list-style: none;
         }
         .sidebar nav li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
         }
         .filter-btn {
             background: transparent;
             border: none;
             color: #cbd5e1;
-            padding: 0.6rem 1rem;
+            padding: 0.8rem 1rem;
             width: 100%;
             text-align: left;
             border-radius: 0.75rem;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;        /* fonte maior */
+            font-weight: 500;
             transition: 0.2s;
             display: flex;
             align-items: center;
@@ -102,9 +106,10 @@
             background: #4f46e5;
             border: none;
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.8rem;
             border-radius: 2rem;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1rem;
             color: white;
             cursor: pointer;
             display: flex;
@@ -116,25 +121,61 @@
         /* Conteúdo principal */
         .main-content {
             flex: 1;
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             overflow-x: auto;
         }
         .header-main {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+            align-items: baseline;
+            margin-bottom: 1.8rem;
             flex-wrap: wrap;
+            gap: 0.5rem;
         }
         .header-main h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            font-family: 'Poppins', 'Inter', system-ui, sans-serif;
         }
         .current-filter {
             background: #1e293b;
             padding: 0.4rem 1.2rem;
             border-radius: 2rem;
             font-size: 0.9rem;
+        }
+
+        /* Rodapé fixo na parte inferior */
+        .footer {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid #2d3a4a;
+            text-align: center;
+            padding: 0.8rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            margin-top: auto;
+        }
+        .footer span {
+            font-size: 1rem;
+            margin-right: 0.3rem;
+        }
+
+        /* Ajuste do container principal para permitir rodapé fixo inferior */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        .flex-grow {
+            flex: 1;
+            display: flex;
         }
 
         /* Kanban colunas */
@@ -154,7 +195,7 @@
             border: 1px solid #2d3a4a;
             display: flex;
             flex-direction: column;
-            max-height: 75vh;
+            max-height: 70vh;
         }
         .column-header {
             padding: 0.8rem 1rem;
@@ -216,7 +257,7 @@
             font-size: 0.8rem;
         }
 
-        /* Modal de formulário e de detalhes - ajustado para maior conforto */
+        /* Modal de formulário e detalhes */
         .modal {
             display: none;
             position: fixed;
@@ -322,35 +363,43 @@
             color: white;
         }
         @media (max-width: 768px) {
-            .sidebar { width: 200px; padding: 1rem; }
+            .sidebar { width: 240px; padding: 1rem; }
+            .sidebar h2 { font-size: 1.6rem; }
+            .filter-btn { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
             .main-content { padding: 0.8rem; }
             .column { min-width: 280px; width: 300px; }
+            .header-main h1 { font-size: 1.6rem; }
         }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <aside class="sidebar">
-        <h2>🎬 Fuego</h2>
-        <nav>
-            <ul id="listFilterMenu">
-                <li><button class="filter-btn active" data-list-id="all">📋 Todas as listas</button></li>
-                <!-- As listas serão inseridas via JS -->
-            </ul>
-        </nav>
-        <div class="new-demand-sidebar">
-            <button class="new-demand-btn" id="openModalBtn">+ Nova demanda</button>
-        </div>
-    </aside>
-    <main class="main-content">
-        <div class="header-main">
-            <h1>Demandas criativas</h1>
-            <div class="current-filter" id="currentFilterLabel">Mostrando: Todas as listas</div>
-        </div>
-        <div class="kanban-board" id="kanbanBoard">
-            <div style="text-align:center; width:100%;">Carregando quadro...</div>
-        </div>
-    </main>
+    <div class="flex-grow">
+        <aside class="sidebar">
+            <h2>🎬 FUEGO</h2>
+            <nav>
+                <ul id="listFilterMenu">
+                    <li><button class="filter-btn active" data-list-id="all">📋 Todas as listas</button></li>
+                    <!-- As listas serão inseridas via JS -->
+                </ul>
+            </nav>
+            <div class="new-demand-sidebar">
+                <button class="new-demand-btn" id="openModalBtn">+ Nova demanda</button>
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="header-main">
+                <h1>ESTEIRA DE EDIÇÃO</h1>
+                <div class="current-filter" id="currentFilterLabel">Mostrando: Todas as listas</div>
+            </div>
+            <div class="kanban-board" id="kanbanBoard">
+                <div style="text-align:center; width:100%;">Carregando quadro...</div>
+            </div>
+        </main>
+    </div>
+    <div class="footer">
+        <span>🔥</span> Fuego Entertainment
+    </div>
 </div>
 
 <!-- Modal de formulário -->
