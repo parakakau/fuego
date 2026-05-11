@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Fuego Entretenimento • Kanban de Demandas</title>
+    <title>Fuego Entretenimento • Dashboard</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background: #0f1117;
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #0b0e14;
             color: #eef2ff;
-            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            position: relative;
         }
 
-        /* fundo com textura sutil */
+        /* Imagem/emoji de fundo (opcional) - troque o conteúdo ou remova */
         body::before {
             content: "🎬";
-            font-size: 25vw;
+            font-size: 28vw;
             position: fixed;
             bottom: 0;
             right: 0;
@@ -31,376 +28,551 @@
             font-family: 'Segoe UI Emoji';
         }
 
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
+        /* Layout com menu lateral fixo */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
             position: relative;
             z-index: 2;
         }
 
-        /* cabeçalho */
-        .hero {
-            text-align: center;
-            margin-bottom: 2.5rem;
-        }
-        .hero h1 {
-            font-size: 2.5rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #ffffff, #a78bfa);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .hero p {
-            color: #9ca3af;
-            margin-top: 0.5rem;
-        }
-
-        /* formulário elegante */
-        .form-card {
-            background: rgba(20, 24, 32, 0.8);
+        /* Menu lateral */
+        .sidebar {
+            width: 260px;
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            border: 1px solid rgba(71, 85, 105, 0.4);
-            padding: 1.8rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.4);
+            border-right: 1px solid #1e293b;
+            padding: 2rem 1.2rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
-        }
-        .form-group {
+        .sidebar h2 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
             display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
+            align-items: center;
+            gap: 0.5rem;
+            color: #facc15;
         }
-        .form-group label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .sidebar nav ul {
+            list-style: none;
+        }
+        .sidebar nav li {
+            margin-bottom: 0.5rem;
+        }
+        .filter-btn {
+            background: transparent;
+            border: none;
             color: #cbd5e1;
-        }
-        input, textarea, select {
-            background: #11161f;
-            border: 1px solid #2d3a4a;
-            border-radius: 1rem;
-            padding: 0.7rem 1rem;
-            color: #f1f5f9;
+            padding: 0.6rem 1rem;
+            width: 100%;
+            text-align: left;
+            border-radius: 0.75rem;
+            cursor: pointer;
             font-size: 0.9rem;
             transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+        .filter-btn:hover {
+            background: #1e293b;
+            color: white;
         }
-        button {
-            background: #8b5cf6;
+        .filter-btn.active {
+            background: #4f46e5;
+            color: white;
+        }
+        .new-demand-sidebar {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #334155;
+        }
+        .new-demand-btn {
+            background: #4f46e5;
             border: none;
-            padding: 0.8rem 1.5rem;
+            width: 100%;
+            padding: 0.7rem;
             border-radius: 2rem;
             font-weight: 600;
             color: white;
             cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 0.5rem;
             justify-content: center;
-            font-size: 0.9rem;
-        }
-        button:hover {
-            background: #7c3aed;
-            transform: scale(0.98);
-        }
-        .full-width {
-            grid-column: 1 / -1;
-        }
-        #loading {
-            text-align: center;
-            margin-top: 1rem;
-            color: #a78bfa;
-            display: none;
+            gap: 0.5rem;
         }
 
-        /* Kanban columns */
-        .kanban-board {
-            display: flex;
-            gap: 1.5rem;
-            overflow-x: auto;
-            padding-bottom: 1rem;
-        }
-        .kanban-column {
-            min-width: 300px;
-            width: 320px;
-            background: rgba(18, 22, 28, 0.6);
-            backdrop-filter: blur(4px);
-            border-radius: 1.2rem;
-            border: 1px solid rgba(71, 85, 105, 0.3);
-            display: flex;
-            flex-direction: column;
-            max-height: 70vh;
-        }
-        .column-header {
-            padding: 1rem;
-            font-weight: 600;
-            border-bottom: 1px solid rgba(71, 85, 105, 0.4);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 1.2rem 1.2rem 0 0;
-        }
-        .column-title {
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .card-count {
-            background: #2d3a4a;
-            padding: 0.2rem 0.6rem;
-            border-radius: 2rem;
-            font-size: 0.75rem;
-            font-weight: normal;
-        }
-        .cards-container {
+        /* Conteúdo principal */
+        .main-content {
             flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
+            padding: 1.5rem;
+            overflow-x: auto;
         }
-        .card-item {
-            background: #1e2430;
-            border-radius: 1rem;
-            padding: 0.9rem;
-            transition: all 0.2s;
-            border-left: 3px solid #8b5cf6;
-        }
-        .card-item:hover {
-            background: #2a313f;
-            transform: translateX(3px);
-        }
-        .card-title {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 0.4rem;
+        .header-main {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.5rem;
-        }
-        .card-title a {
-            color: #eef2ff;
-            text-decoration: none;
-        }
-        .card-title a:hover {
-            text-decoration: underline;
-        }
-        .labels {
-            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            gap: 0.4rem;
-            margin: 0.5rem 0;
         }
-        .label-badge {
-            font-size: 0.65rem;
-            padding: 0.2rem 0.6rem;
+        .header-main h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+        .current-filter {
+            background: #1e293b;
+            padding: 0.3rem 1rem;
             border-radius: 2rem;
-            background: #2d3a4a;
-            color: #fff;
-            font-weight: 500;
-            display: inline-block;
-        }
-        .card-desc-preview {
-            font-size: 0.75rem;
-            color: #9ca3af;
-            margin-top: 0.3rem;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .empty-column {
-            text-align: center;
-            color: #6b7280;
-            padding: 1.5rem;
-            font-style: italic;
             font-size: 0.8rem;
         }
 
-        /* scroll customizado */
-        .cards-container::-webkit-scrollbar {
-            width: 4px;
+        /* Kanban colunas */
+        .kanban-board {
+            display: flex;
+            gap: 1.2rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
         }
-        .cards-container::-webkit-scrollbar-track {
+        .column {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(4px);
+            border-radius: 1rem;
+            min-width: 280px;
+            width: 300px;
+            flex-shrink: 0;
+            border: 1px solid #2d3a4a;
+            display: flex;
+            flex-direction: column;
+            max-height: 75vh;
+        }
+        .column-header {
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 1rem 1rem 0 0;
+        }
+        .cards-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+        .card-item {
+            background: #0f172a;
+            border-radius: 0.8rem;
+            padding: 0.7rem;
+            cursor: pointer;
+            transition: 0.1s;
+            border-left: 3px solid #4f46e5;
+        }
+        .card-item:hover {
             background: #1e293b;
-            border-radius: 10px;
+            transform: translateY(-2px);
         }
-        .cards-container::-webkit-scrollbar-thumb {
-            background: #8b5cf6;
-            border-radius: 10px;
+        .card-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+        }
+        .card-labels {
+            display: flex;
+            gap: 0.3rem;
+            margin: 0.3rem 0;
+            flex-wrap: wrap;
+        }
+        .label-badge {
+            font-size: 0.6rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 1rem;
+            background: #334155;
+            color: #e2e8f0;
+        }
+        .card-desc {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 0.2rem;
+        }
+        .empty-column {
+            text-align: center;
+            color: #64748b;
+            padding: 1rem;
+            font-size: 0.8rem;
         }
 
-        @media (max-width: 800px) {
-            body { padding: 1rem; }
-            .kanban-column { min-width: 280px; }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #0f172a;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            box-shadow: 0 20px 35px -12px black;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .close-modal {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .comments-section {
+            margin-top: 1.5rem;
+            border-top: 1px solid #334155;
+            padding-top: 1rem;
+        }
+        .comment {
+            background: #1e293b;
+            border-radius: 0.8rem;
+            padding: 0.6rem;
+            margin-bottom: 0.6rem;
+        }
+        .comment-author {
+            font-weight: bold;
+            font-size: 0.7rem;
+            color: #facc15;
+        }
+        .comment-text {
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+        .new-comment-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .new-comment-form input {
+            flex: 1;
+            background: #1e293b;
+            border: 1px solid #4f46e5;
+            padding: 0.6rem;
+            border-radius: 2rem;
+            color: white;
+        }
+        .new-comment-form button {
+            background: #4f46e5;
+            border: none;
+            padding: 0 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 200px; padding: 1rem; }
+            .main-content { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="hero">
-        <h1>🎞️ Fuego Entretenimento</h1>
-        <p>Central de demandas • Acompanhe o andamento dos seus projetos</p>
-    </div>
+<div class="app-container">
+    <aside class="sidebar">
+        <h2>🎬 Fuego</h2>
+        <nav>
+            <ul id="listFilterMenu">
+                <li><button class="filter-btn active" data-list-id="all">📋 Todas as listas</button></li>
+                <!-- As listas serão inseridas via JS -->
+            </ul>
+        </nav>
+        <div class="new-demand-sidebar">
+            <button class="new-demand-btn" id="openModalBtn">+ Nova demanda</button>
+        </div>
+    </aside>
+    <main class="main-content">
+        <div class="header-main">
+            <h1>Demandas criativas</h1>
+            <div class="current-filter" id="currentFilterLabel">Mostrando: Todas as listas</div>
+        </div>
+        <div class="kanban-board" id="kanbanBoard">
+            <div style="text-align:center; width:100%;">Carregando quadro...</div>
+        </div>
+    </main>
+</div>
 
-    <!-- Formulário -->
-    <div class="form-card">
-        <h3 style="margin-bottom: 1.2rem;">📝 Abrir nova demanda</h3>
+<!-- Modal de formulário -->
+<div id="demandaModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📝 Nova demanda</h2>
+            <span class="close-modal" id="closeModalBtn">&times;</span>
+        </div>
         <form id="demandaForm">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>🧑‍🎤 Nome do Cliente *</label>
-                    <input type="text" name="nome_cliente" required placeholder="Ex: Michael, Cassiano...">
-                </div>
-                <div class="form-group">
-                    <label>📅 Data de Entrega Desejada</label>
-                    <input type="date" name="data_entrega">
-                </div>
-                <div class="form-group full-width">
-                    <label>📝 Descrição da Tarefa *</label>
-                    <textarea name="descricao" rows="2" required placeholder="Descreva o que precisa ser feito"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>🔗 Link do Material Bruto</label>
-                    <input type="url" name="link_material" placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label>🎨 Tipo de serviço</label>
-                    <select name="pergunta">
-                        <option value="Opção 1">🎥 Edição de vídeo</option>
-                        <option value="Opção 2">📸 Fotografia</option>
-                        <option value="Opção 3">🎨 Design / Motion</option>
-                        <option value="Outro">⚙️ Outro</option>
-                    </select>
-                </div>
-                <div class="form-group full-width">
-                    <label>💬 Comentários adicionais</label>
-                    <textarea name="comentarios" rows="1" placeholder="Observações extras"></textarea>
-                </div>
+            <div style="margin-bottom: 0.8rem;">
+                <label>Nome do Cliente *</label>
+                <input type="text" name="nome_cliente" required style="width:100%;">
             </div>
-            <button type="submit" style="margin-top: 1rem;">🚀 Enviar demanda</button>
-            <div id="loading">Enviando... ⏳</div>
+            <div style="margin-bottom: 0.8rem;">
+                <label>Descrição *</label>
+                <textarea name="descricao" rows="2" required style="width:100%;"></textarea>
+            </div>
+            <div style="margin-bottom: 0.8rem;">
+                <label>Link do material</label>
+                <input type="url" name="link_material" style="width:100%;">
+            </div>
+            <div style="margin-bottom: 0.8rem;">
+                <label>Data desejada</label>
+                <input type="date" name="data_entrega" style="width:100%;">
+            </div>
+            <div style="margin-bottom: 0.8rem;">
+                <label>Comentários</label>
+                <textarea name="comentarios" rows="2" style="width:100%;"></textarea>
+            </div>
+            <div style="margin-bottom: 0.8rem;">
+                <label>Tipo de serviço</label>
+                <select name="pergunta" style="width:100%;">
+                    <option value="Opção 1">🎥 Edição de vídeo</option>
+                    <option value="Opção 2">📸 Fotografia</option>
+                    <option value="Opção 3">🎨 Design</option>
+                    <option value="Outro">⚙️ Outro</option>
+                </select>
+            </div>
+            <button type="submit" style="background:#4f46e5; border:none; padding:0.6rem; border-radius:2rem; width:100%;">Enviar</button>
+            <div id="loadingModal" style="display:none; text-align:center; margin-top:0.5rem;">Enviando...</div>
         </form>
     </div>
+</div>
 
-    <!-- Kanban Board -->
-    <div id="kanbanContainer">
-        <div style="text-align: center; padding: 2rem;">Carregando quadro de demandas...</div>
+<!-- Modal de detalhes + comentários -->
+<div id="cardModal" class="modal">
+    <div class="modal-content" id="cardModalContent">
+        <!-- preenchido via JS -->
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE7C70uZrFwx8PJEZw_3ao0OZz0l3WaMBy9Ma4Lba2RMGAwWoncU9s8toZ_vrbHWtbLQ/exec'; // ATUALIZE
+    // ========== CONFIGURAÇÃO ==========
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyQRrto89RvqbypZCRXVgxxLr6-4j4EcBfBRSvqMphtCVNM8DcTc85LxA1dk0l_tCtL/exec'; // SUBSTITUA
+    
+    let todasListas = [];      // array de listas do Trello
+    let todosCards = [];       // array de cards
+    let listaFiltradaId = 'all';   // id da lista selecionada no menu
 
-    const form = document.getElementById('demandaForm');
-    const loadingDiv = document.getElementById('loading');
-    const kanbanContainer = document.getElementById('kanbanContainer');
+    const boardContainer = document.getElementById('kanbanBoard');
+    const filterMenu = document.getElementById('listFilterMenu');
+    const currentFilterLabel = document.getElementById('currentFilterLabel');
+
+    // Abrir modal de nova demanda
+    const modalForm = document.getElementById('demandaModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    openBtn.onclick = () => modalForm.style.display = 'flex';
+    closeBtn.onclick = () => modalForm.style.display = 'none';
+    window.onclick = (e) => { if (e.target === modalForm) modalForm.style.display = 'none'; };
 
     // Envio do formulário
+    const form = document.getElementById('demandaForm');
     form.onsubmit = async (e) => {
         e.preventDefault();
-        loadingDiv.style.display = 'block';
+        const loading = document.getElementById('loadingModal');
+        loading.style.display = 'block';
         const formData = new FormData(form);
         const params = new URLSearchParams(formData);
         try {
-            const response = await fetch(SCRIPT_URL, { method: 'POST', body: params });
-            const result = await response.json();
-            if (result.status === 'success') {
-                alert('✅ Demanda criada! O card aparecerá em instantes.');
+            const res = await fetch(SCRIPT_URL, { method: 'POST', body: params });
+            const data = await res.json();
+            if (data.status === 'success') {
+                alert('✅ Demanda criada!');
                 form.reset();
-                carregarKanban(); // recarrega o quadro
+                modalForm.style.display = 'none';
+                carregarBoard();
             } else {
-                alert('❌ Erro: ' + JSON.stringify(result));
+                alert('Erro: ' + JSON.stringify(data));
             }
-        } catch (err) {
-            alert('⚠️ Erro de conexão: ' + err.message);
-        } finally {
-            loadingDiv.style.display = 'none';
-        }
+        } catch (err) { alert('Erro conexão'); }
+        finally { loading.style.display = 'none'; }
     };
 
-    // Buscar listas e cards e montar Kanban
-    async function carregarKanban() {
-        kanbanContainer.innerHTML = '<div style="text-align: center; padding: 2rem;">⏳ Atualizando quadro...</div>';
+    // Buscar listas e cards
+    async function carregarBoard() {
+        boardContainer.innerHTML = '<div>Carregando...</div>';
         try {
-            // Busca listas e cards simultaneamente
-            const [listsRes, cardsRes] = await Promise.all([
-                fetch(`${SCRIPT_URL}?action=lists`),
-                fetch(`${SCRIPT_URL}?action=cards`)
-            ]);
-            const lists = await listsRes.json();
-            let cards = await cardsRes.json();
-
-            if (!Array.isArray(lists) || !Array.isArray(cards)) throw new Error('Dados inválidos');
-
-            // Filtrar listas que não são arquivadas (closed: false) e ordenar por posição
-            const activeLists = lists.filter(list => !list.closed).sort((a,b) => a.pos - b.pos);
-            
-            // Agrupar cards por idList
-            const cardsByList = {};
-            cards.forEach(card => {
-                if (!cardsByList[card.idList]) cardsByList[card.idList] = [];
-                cardsByList[card.idList].push(card);
-            });
-
-            // Montar HTML
-            let html = '<div class="kanban-board">';
-            for (const list of activeLists) {
-                const listCards = cardsByList[list.id] || [];
-                html += `
-                    <div class="kanban-column">
-                        <div class="column-header">
-                            <span class="column-title">📌 ${escapeHtml(list.name)}</span>
-                            <span class="card-count">${listCards.length}</span>
-                        </div>
-                        <div class="cards-container">
-                `;
-                if (listCards.length === 0) {
-                    html += '<div class="empty-column">Nenhum card nesta etapa</div>';
-                } else {
-                    listCards.forEach(card => {
-                        // Extrair labels
-                        const labelsHtml = (card.labels || []).map(label => 
-                            `<span class="label-badge" style="background: ${label.color ? '#'+label.color : '#4b5563'}">${escapeHtml(label.name || 'sem nome')}</span>`
-                        ).join('');
-                        const descPreview = (card.desc || '').substring(0, 100) + (card.desc && card.desc.length > 100 ? '…' : '');
-                        html += `
-                            <div class="card-item">
-                                <div class="card-title">
-                                    <a href="${card.url}" target="_blank">📌 ${escapeHtml(card.name)}</a>
-                                </div>
-                                ${labelsHtml ? `<div class="labels">${labelsHtml}</div>` : ''}
-                                <div class="card-desc-preview">${escapeHtml(descPreview)}</div>
-                            </div>
-                        `;
-                    });
-                }
-                html += `</div></div>`;
-            }
-            html += '</div>';
-            kanbanContainer.innerHTML = html;
+            const response = await fetch(`${SCRIPT_URL}?action=board`);
+            const data = await response.json();
+            todasListas = data.lists;
+            todosCards = data.cards;
+            construirMenuLateral();
+            renderKanban();
         } catch (err) {
-            console.error(err);
-            kanbanContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #f87171;">❌ Erro ao carregar o quadro. Tente novamente mais tarde.</div>';
+            boardContainer.innerHTML = `<div>Erro: ${err.message}</div>`;
+        }
+    }
+
+    function construirMenuLateral() {
+        // Limpa menu, mantém apenas o "Todas as listas"
+        const ul = filterMenu.querySelector('ul') || filterMenu;
+        ul.innerHTML = '<li><button class="filter-btn active" data-list-id="all">📋 Todas as listas</button></li>';
+        todasListas.forEach(list => {
+            const li = document.createElement('li');
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.setAttribute('data-list-id', list.id);
+            btn.innerHTML = `📌 ${list.name}`;
+            btn.onclick = () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                listaFiltradaId = list.id;
+                currentFilterLabel.innerText = `Mostrando: ${list.name}`;
+                renderKanban();
+            };
+            li.appendChild(btn);
+            ul.appendChild(li);
+        });
+        // Reseta o evento do botão "Todas as listas"
+        const allBtn = document.querySelector('.filter-btn[data-list-id="all"]');
+        if (allBtn) {
+            allBtn.onclick = () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                allBtn.classList.add('active');
+                listaFiltradaId = 'all';
+                currentFilterLabel.innerText = 'Mostrando: Todas as listas';
+                renderKanban();
+            };
+        }
+    }
+
+    function renderKanban() {
+        boardContainer.innerHTML = '';
+        // Filtra listas: se listaFiltradaId for 'all', mostra todas; senão, só a selecionada
+        let listasParaExibir = todasListas;
+        if (listaFiltradaId !== 'all') {
+            listasParaExibir = todasListas.filter(l => l.id === listaFiltradaId);
+        }
+        if (listasParaExibir.length === 0) {
+            boardContainer.innerHTML = '<div>Nenhuma lista encontrada.</div>';
+            return;
+        }
+        // Agrupa cards por lista
+        const cardsPorLista = {};
+        todosCards.forEach(card => {
+            if (!cardsPorLista[card.idList]) cardsPorLista[card.idList] = [];
+            cardsPorLista[card.idList].push(card);
+        });
+
+        listasParaExibir.forEach(list => {
+            const cards = cardsPorLista[list.id] || [];
+            const colDiv = document.createElement('div');
+            colDiv.className = 'column';
+            colDiv.innerHTML = `
+                <div class="column-header">
+                    <span>${escapeHtml(list.name)}</span>
+                    <span style="background:#334155; padding:0.2rem 0.5rem; border-radius:1rem;">${cards.length}</span>
+                </div>
+                <div class="cards-list" id="list-${list.id}">
+                    ${cards.length === 0 ? '<div class="empty-column">Sem cards</div>' : ''}
+                </div>
+            `;
+            const cardsContainer = colDiv.querySelector('.cards-list');
+            cards.forEach(card => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card-item';
+                cardDiv.onclick = () => abrirModalDetalhes(card.id);
+                // Etiquetas
+                let labelsHtml = '';
+                if (card.labels && card.labels.length) {
+                    labelsHtml = `<div class="card-labels">${card.labels.map(lbl => `<span class="label-badge">${escapeHtml(lbl.name || 'label')}</span>`).join('')}</div>`;
+                }
+                const descPreview = card.desc ? card.desc.substring(0, 80) : '';
+                cardDiv.innerHTML = `
+                    <div class="card-title">${escapeHtml(card.name)}</div>
+                    ${labelsHtml}
+                    <div class="card-desc">${escapeHtml(descPreview)}...</div>
+                `;
+                cardsContainer.appendChild(cardDiv);
+            });
+            boardContainer.appendChild(colDiv);
+        });
+    }
+
+    async function abrirModalDetalhes(cardId) {
+        const modal = document.getElementById('cardModal');
+        const modalContent = document.getElementById('cardModalContent');
+        modalContent.innerHTML = '<div style="text-align:center;">Carregando detalhes...</div>';
+        modal.style.display = 'flex';
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=cards&cardId=${cardId}`);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            const card = data.card;
+            const comments = data.comments || [];
+            // Monta o conteúdo
+            let labelsHtml = '';
+            if (card.labels && card.labels.length) {
+                labelsHtml = `<div style="margin:0.5rem 0;">${card.labels.map(lbl => `<span class="label-badge">${escapeHtml(lbl.name)}</span>`).join('')}</div>`;
+            }
+            let commentsHtml = '';
+            comments.forEach(com => {
+                const author = com.memberCreator ? com.memberCreator.fullName : 'Usuário';
+                commentsHtml += `<div class="comment"><div class="comment-author">${escapeHtml(author)}</div><div class="comment-text">${escapeHtml(com.data.text)}</div></div>`;
+            });
+            if (comments.length === 0) commentsHtml = '<div style="color:#64748b;">Nenhum comentário ainda.</div>';
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <h2>${escapeHtml(card.name)}</h2>
+                    <span class="close-modal" id="closeCardModal">&times;</span>
+                </div>
+                <div><strong>Descrição:</strong><br>${escapeHtml(card.desc || 'Sem descrição')}</div>
+                ${labelsHtml}
+                <div><a href="${card.url}" target="_blank" style="color:#4f46e5;">🔗 Abrir no Trello →</a></div>
+                <div class="comments-section">
+                    <h3>💬 Comentários</h3>
+                    <div id="commentsList">${commentsHtml}</div>
+                    <div class="new-comment-form">
+                        <input type="text" id="newCommentText" placeholder="Escreva um comentário...">
+                        <button id="sendCommentBtn">Enviar</button>
+                    </div>
+                </div>
+            `;
+            // Fechar modal
+            document.getElementById('closeCardModal').onclick = () => modal.style.display = 'none';
+            // Enviar comentário
+            const sendBtn = document.getElementById('sendCommentBtn');
+            const commentInput = document.getElementById('newCommentText');
+            sendBtn.onclick = async () => {
+                const text = commentInput.value.trim();
+                if (!text) return;
+                sendBtn.disabled = true;
+                try {
+                    const formData = new URLSearchParams();
+                    formData.append('action', 'addComment');
+                    formData.append('cardId', cardId);
+                    formData.append('text', text);
+                    const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                    const result = await res.json();
+                    if (result.status === 'success') {
+                        commentInput.value = '';
+                        // Recarrega os comentários para mostrar o novo
+                        abrirModalDetalhes(cardId);
+                    } else {
+                        alert('Erro ao comentar');
+                    }
+                } catch (err) { alert('Falha na conexão'); }
+                finally { sendBtn.disabled = false; }
+            };
+        } catch (err) {
+            modalContent.innerHTML = `<div>Erro: ${err.message}</div><button onclick="document.getElementById('cardModal').style.display='none'">Fechar</button>`;
         }
     }
 
@@ -414,9 +586,15 @@
         });
     }
 
-    // Recarregar a cada 30 segundos (opcional)
-    carregarKanban();
-    setInterval(carregarKanban, 30000);
+    // Fechar modais globalmente
+    window.onclick = (e) => {
+        if (e.target === document.getElementById('cardModal')) {
+            document.getElementById('cardModal').style.display = 'none';
+        }
+    };
+
+    carregarBoard();
+    setInterval(carregarBoard, 60000); // atualiza a cada 60s
 </script>
 </body>
 </html>
