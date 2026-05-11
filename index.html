@@ -15,19 +15,22 @@
             position: relative;
         }
 
-        /* Imagem/emoji de fundo (opcional) - troque o conteúdo ou remova */
-        body::before {
-            content: "🎬";
-            font-size: 28vw;
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 0;
-            font-family: 'Segoe UI Emoji';
-        }
-
+        /* Imagem de fundo personalizada (PNG) */
+body::before {
+    content: "";
+    background-image: url('https://parakakau.github.io/fuego/images/bg-fuego.png'); /* ← seu caminho */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    height: 70%;
+    opacity: 0.1;          /* comece com 0.1, depois ajuste */
+    pointer-events: none;
+    z-index: 0;
+}
         /* Layout com menu lateral fixo */
         .app-container {
             display: flex;
