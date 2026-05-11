@@ -388,7 +388,7 @@
             <div class="new-demand-sidebar">
                 <button class="new-demand-btn" id="openModalBtn">+ Nova demanda</button>
             </div>
-            <div style="margin-top: auto; padding-top: 2rem; font-size: 0.85rem; color: #64748b; display: flex; align-items: center; gap: 0.4rem;">
+                        <div style="margin-top: auto; padding-top: 2rem; text-align: center; font-size: 1.1rem; font-weight: 500; color: #94a3b8; letter-spacing: 1px;">
                 <span>🔥</span> Fuego Entertainment
             </div>
         </aside>
@@ -624,32 +624,43 @@
                 <div><strong>Descrição:</strong><br>${escapeHtml(card.desc || 'Sem descrição')}</div>
                 ${labelsHtml}
                 <div><a href="${card.url}" target="_blank" style="color:#4f46e5;">🔗 Abrir no Trello →</a></div>
-                <div class="comments-section">
-                    <h3>💬 Comentários</h3>
-                    <div id="commentsList">${commentsHtml}</div>
-                    <div class="new-comment-form">
-                        <input type="text" id="newCommentText" placeholder="Escreva um comentário...">
-                        <button id="sendCommentBtn">Enviar</button>
-                    </div>
-                </div>
-            `;
+                                    <div class="comments-section">
+                        <h3>💬 Comentários</h3>
+                        <div id="commentsList">${commentsHtml}</div>
+                        <div class="new-comment-form" style="flex-wrap: wrap; gap: 0.5rem;">
+                            <input type="text" id="newCommentName" placeholder="Seu nome" style="flex: 1; min-width: 120px;">
+                            <input type="text" id="newCommentText" placeholder="Escreva um comentário..." style="flex: 2; min-width: 180px;">
+                            <button id="sendCommentBtn" style="white-space: nowrap;">Enviar</button>
+                        </div>
+                    </div>            `;
             document.getElementById('closeCardModal').onclick = () => modal.style.display = 'none';
             const sendBtn = document.getElementById('sendCommentBtn');
             const commentInput = document.getElementById('newCommentText');
+                        const commentNameInput = document.getElementById('newCommentName');
+            const commentTextInput = document.getElementById('newCommentText');
+            
             sendBtn.onclick = async () => {
-                const text = commentInput.value.trim();
+                const name = commentNameInput.value.trim();
+                const text = commentTextInput.value.trim();
                 if (!text) return;
+                if (!name) {
+                    alert('Por favor, informe seu nome antes de comentar.');
+                    return;
+                }
                 sendBtn.disabled = true;
                 try {
+                    // Monta o comentário com nome do usuário
+                    const commentWithName = `**${name}:** ${text}`;
                     const formData = new URLSearchParams();
                     formData.append('action', 'addComment');
                     formData.append('cardId', cardId);
-                    formData.append('text', text);
+                    formData.append('text', commentWithName);
                     const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
                     const result = await res.json();
                     if (result.status === 'success') {
-                        commentInput.value = '';
-                        abrirModalDetalhes(cardId);
+                        commentNameInput.value = '';
+                        commentTextInput.value = '';
+                        abrirModalDetalhes(cardId); // recarrega os comentários
                     } else {
                         alert('Erro ao comentar');
                     }
