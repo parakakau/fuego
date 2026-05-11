@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Fuego Entretenimento • Central de Demandas</title>
+    <title>Fuego Entretenimento • Kanban de Demandas</title>
     <style>
         * {
             margin: 0;
@@ -12,272 +12,276 @@
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: #0a0c10;
+            background: #0f1117;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             color: #eef2ff;
             padding: 2rem 1.5rem;
-            position: relative;
-            min-height: 100vh;
         }
 
-        /* Imagem / emoji de fundo (baixa opacidade) */
+        /* fundo com textura sutil */
         body::before {
-            content: "🔥";  /* ← Troque por um emoji ou remova para usar imagem PNG */
-            font-size: 28vw;
+            content: "🎬";
+            font-size: 25vw;
             position: fixed;
             bottom: 0;
             right: 0;
-            opacity: 0.08;
+            opacity: 0.03;
             pointer-events: none;
             z-index: 0;
-            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+            font-family: 'Segoe UI Emoji';
         }
-
-        /* Se preferir usar uma imagem PNG, descomente as linhas abaixo e comente a linha do emoji:
-        body::before {
-            content: "";
-            background-image: url('https://SEU-LINK-DA-IMAGEM.png'); 
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: bottom right;
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: 0;
-        }
-        */
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             position: relative;
             z-index: 2;
         }
 
-        /* Cabeçalho */
-        .header {
+        /* cabeçalho */
+        .hero {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
-        .header h1 {
-            font-size: 2.2rem;
+        .hero h1 {
+            font-size: 2.5rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #ffffff, #b3b3ff);
+            background: linear-gradient(135deg, #ffffff, #a78bfa);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             letter-spacing: -0.5px;
         }
-        .header p {
+        .hero p {
             color: #9ca3af;
             margin-top: 0.5rem;
-            font-size: 1rem;
         }
 
-        /* Grid: formulário + lista */
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 2rem;
-        }
-
-        /* Cards de formulário e lista */
-        .card-panel {
-            background: rgba(18, 22, 28, 0.85);
-            backdrop-filter: blur(8px);
-            border-radius: 1.5rem;
+        /* formulário elegante */
+        .form-card {
+            background: rgba(20, 24, 32, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
             border: 1px solid rgba(71, 85, 105, 0.4);
             padding: 1.8rem;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
-            transition: transform 0.2s ease;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.4);
         }
-        .card-panel:hover {
-            transform: translateY(-3px);
-            border-color: rgba(99, 102, 241, 0.4);
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
         }
-
-        .panel-title {
-            font-size: 1.6rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            border-left: 4px solid #4f46e5;
-            padding-left: 1rem;
-        }
-
-        /* Formulário */
         .form-group {
-            margin-bottom: 1.3rem;
-        }
-        label {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 0.4rem;
+        }
+        .form-group label {
+            font-size: 0.8rem;
             font-weight: 500;
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #cbd5e1;
         }
         input, textarea, select {
-            width: 100%;
-            padding: 0.75rem 1rem;
             background: #11161f;
             border: 1px solid #2d3a4a;
-            border-radius: 0.9rem;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
             color: #f1f5f9;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: 0.2s;
         }
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
         }
         button {
-            background: #4f46e5;
+            background: #8b5cf6;
             border: none;
-            width: 100%;
-            padding: 0.8rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 2rem;
             font-weight: 600;
-            font-size: 1rem;
             color: white;
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 0.5rem;
-            display: flex;
-            justify-content: center;
+            display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            justify-content: center;
+            font-size: 0.9rem;
         }
         button:hover {
-            background: #6366f1;
+            background: #7c3aed;
             transform: scale(0.98);
-            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+        .full-width {
+            grid-column: 1 / -1;
         }
         #loading {
-            display: none;
             text-align: center;
             margin-top: 1rem;
-            font-size: 0.85rem;
-            color: #a5b4fc;
+            color: #a78bfa;
+            display: none;
         }
 
-        /* Lista de cards (fila) */
-        .cards-list {
-            max-height: 550px;
+        /* Kanban columns */
+        .kanban-board {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+        .kanban-column {
+            min-width: 300px;
+            width: 320px;
+            background: rgba(18, 22, 28, 0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 1.2rem;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            flex-direction: column;
+            max-height: 70vh;
+        }
+        .column-header {
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1.2rem 1.2rem 0 0;
+        }
+        .column-title {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .card-count {
+            background: #2d3a4a;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: normal;
+        }
+        .cards-container {
+            flex: 1;
             overflow-y: auto;
-            padding-right: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
         }
         .card-item {
-            background: rgba(12, 16, 22, 0.7);
-            border-left: 4px solid #4f46e5;
+            background: #1e2430;
             border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            padding: 0.9rem;
             transition: all 0.2s;
-            backdrop-filter: blur(4px);
+            border-left: 3px solid #8b5cf6;
         }
         .card-item:hover {
-            background: #1c2532;
-            transform: translateX(4px);
+            background: #2a313f;
+            transform: translateX(3px);
         }
-        .card-item h3 {
-            font-size: 1.1rem;
+        .card-title {
             font-weight: 600;
+            font-size: 0.95rem;
             margin-bottom: 0.4rem;
-            color: #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
         }
-        .card-desc {
-            font-size: 0.8rem;
+        .card-title a {
+            color: #eef2ff;
+            text-decoration: none;
+        }
+        .card-title a:hover {
+            text-decoration: underline;
+        }
+        .labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin: 0.5rem 0;
+        }
+        .label-badge {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            background: #2d3a4a;
+            color: #fff;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .card-desc-preview {
+            font-size: 0.75rem;
             color: #9ca3af;
-            margin-bottom: 0.5rem;
+            margin-top: 0.3rem;
+            line-height: 1.3;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        .card-link {
-            font-size: 0.75rem;
-            color: #818cf8;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            margin-top: 0.3rem;
-        }
-        .card-link:hover {
-            color: #c7d2fe;
-            text-decoration: underline;
-        }
-        .empty-message {
+        .empty-column {
             text-align: center;
             color: #6b7280;
-            padding: 2rem;
+            padding: 1.5rem;
             font-style: italic;
+            font-size: 0.8rem;
         }
 
-        /* scroll personalizado */
-        .cards-list::-webkit-scrollbar {
-            width: 5px;
+        /* scroll customizado */
+        .cards-container::-webkit-scrollbar {
+            width: 4px;
         }
-        .cards-list::-webkit-scrollbar-track {
+        .cards-container::-webkit-scrollbar-track {
             background: #1e293b;
             border-radius: 10px;
         }
-        .cards-list::-webkit-scrollbar-thumb {
-            background: #4f46e5;
+        .cards-container::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
             border-radius: 10px;
         }
 
-        /* responsivo */
-        @media (max-width: 900px) {
-            body { padding: 1.2rem; }
-            .dashboard { grid-template-columns: 1fr; gap: 1.5rem; }
-            .header h1 { font-size: 1.8rem; }
+        @media (max-width: 800px) {
+            body { padding: 1rem; }
+            .kanban-column { min-width: 280px; }
         }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="header">
+    <div class="hero">
         <h1>🎞️ Fuego Entretenimento</h1>
-        <p>Central de demandas criativas • Acompanhamento em tempo real</p>
+        <p>Central de demandas • Acompanhe o andamento dos seus projetos</p>
     </div>
 
-    <div class="dashboard">
-        <!-- FORMULÁRIO -->
-        <div class="card-panel">
-            <div class="panel-title">
-                <span>📋</span> Abrir nova demanda
-            </div>
-            <form id="demandaForm">
+    <!-- Formulário -->
+    <div class="form-card">
+        <h3 style="margin-bottom: 1.2rem;">📝 Abrir nova demanda</h3>
+        <form id="demandaForm">
+            <div class="form-grid">
                 <div class="form-group">
                     <label>🧑‍🎤 Nome do Cliente *</label>
                     <input type="text" name="nome_cliente" required placeholder="Ex: Michael, Cassiano...">
                 </div>
                 <div class="form-group">
-                    <label>📝 Descrição da Tarefa *</label>
-                    <textarea name="descricao" rows="3" required placeholder="Detalhe o que precisa ser feito..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>🔗 Link do Material Bruto</label>
-                    <input type="url" name="link_material" placeholder="https://drive.google.com, capcut...">
-                </div>
-                <div class="form-group">
                     <label>📅 Data de Entrega Desejada</label>
                     <input type="date" name="data_entrega">
                 </div>
+                <div class="form-group full-width">
+                    <label>📝 Descrição da Tarefa *</label>
+                    <textarea name="descricao" rows="2" required placeholder="Descreva o que precisa ser feito"></textarea>
+                </div>
                 <div class="form-group">
-                    <label>💬 Comentários</label>
-                    <textarea name="comentarios" rows="2" placeholder="Observações adicionais..."></textarea>
+                    <label>🔗 Link do Material Bruto</label>
+                    <input type="url" name="link_material" placeholder="https://...">
                 </div>
                 <div class="form-group">
                     <label>🎨 Tipo de serviço</label>
@@ -285,94 +289,118 @@
                         <option value="Opção 1">🎥 Edição de vídeo</option>
                         <option value="Opção 2">📸 Fotografia</option>
                         <option value="Opção 3">🎨 Design / Motion</option>
-                        <option value="Outro">⚙️ Outro (especificar na descrição)</option>
+                        <option value="Outro">⚙️ Outro</option>
                     </select>
                 </div>
-                <button type="submit">
-                    <span>🚀</span> Enviar demanda
-                </button>
-                <div id="loading">Enviando demanda... ⏳</div>
-            </form>
-        </div>
+                <div class="form-group full-width">
+                    <label>💬 Comentários adicionais</label>
+                    <textarea name="comentarios" rows="1" placeholder="Observações extras"></textarea>
+                </div>
+            </div>
+            <button type="submit" style="margin-top: 1rem;">🚀 Enviar demanda</button>
+            <div id="loading">Enviando... ⏳</div>
+        </form>
+    </div>
 
-        <!-- LISTA DA FILA (cards) -->
-        <div class="card-panel">
-            <div class="panel-title">
-                <span>⏳</span> Fila de demandas ativas
-            </div>
-            <div id="cardsList" class="cards-list">
-                <div class="empty-message">Carregando demandas...</div>
-            </div>
-        </div>
+    <!-- Kanban Board -->
+    <div id="kanbanContainer">
+        <div style="text-align: center; padding: 2rem;">Carregando quadro de demandas...</div>
     </div>
 </div>
 
 <script>
-    // ⚠️ IMPORTANTE: Substitua pela URL do seu Web App (Google Apps Script)
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE7C70uZrFwx8PJEZw_3ao0OZz0l3WaMBy9Ma4Lba2RMGAwWoncU9s8toZ_vrbHWtbLQ/exec';  
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE7C70uZrFwx8PJEZw_3ao0OZz0l3WaMBy9Ma4Lba2RMGAwWoncU9s8toZ_vrbHWtbLQ/exec'; // ATUALIZE
 
     const form = document.getElementById('demandaForm');
     const loadingDiv = document.getElementById('loading');
-    const cardsContainer = document.getElementById('cardsList');
+    const kanbanContainer = document.getElementById('kanbanContainer');
 
-    // Envio do formulário (POST)
+    // Envio do formulário
     form.onsubmit = async (e) => {
         e.preventDefault();
         loadingDiv.style.display = 'block';
         const formData = new FormData(form);
         const params = new URLSearchParams(formData);
-
         try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                body: params
-            });
+            const response = await fetch(SCRIPT_URL, { method: 'POST', body: params });
             const result = await response.json();
             if (result.status === 'success') {
-                alert('✅ Demanda criada com sucesso! O card aparecerá na fila em instantes.');
+                alert('✅ Demanda criada! O card aparecerá em instantes.');
                 form.reset();
-                carregarCards();  // recarrega a fila
+                carregarKanban(); // recarrega o quadro
             } else {
-                alert('❌ Erro ao criar: ' + JSON.stringify(result));
+                alert('❌ Erro: ' + JSON.stringify(result));
             }
         } catch (err) {
-            alert('⚠️ Falha na conexão: ' + err.message);
+            alert('⚠️ Erro de conexão: ' + err.message);
         } finally {
             loadingDiv.style.display = 'none';
         }
     };
 
-    // Buscar cards da fila (GET?action=cards)
-    async function carregarCards() {
-        cardsContainer.innerHTML = '<div class="empty-message">⏳ Atualizando lista...</div>';
+    // Buscar listas e cards e montar Kanban
+    async function carregarKanban() {
+        kanbanContainer.innerHTML = '<div style="text-align: center; padding: 2rem;">⏳ Atualizando quadro...</div>';
         try {
-            const response = await fetch(`${SCRIPT_URL}?action=cards`);
-            const cards = await response.json();
+            // Busca listas e cards simultaneamente
+            const [listsRes, cardsRes] = await Promise.all([
+                fetch(`${SCRIPT_URL}?action=lists`),
+                fetch(`${SCRIPT_URL}?action=cards`)
+            ]);
+            const lists = await listsRes.json();
+            let cards = await cardsRes.json();
 
-            if (!cards.length) {
-                cardsContainer.innerHTML = '<div class="empty-message">✨ Nenhuma demanda ativa no momento. Crie uma nova!</div>';
-                return;
-            }
+            if (!Array.isArray(lists) || !Array.isArray(cards)) throw new Error('Dados inválidos');
 
-            // Limita a última meia dúzia se quiser, mas exibe todas
-            cardsContainer.innerHTML = '';
+            // Filtrar listas que não são arquivadas (closed: false) e ordenar por posição
+            const activeLists = lists.filter(list => !list.closed).sort((a,b) => a.pos - b.pos);
+            
+            // Agrupar cards por idList
+            const cardsByList = {};
             cards.forEach(card => {
-                // Limpeza básica da descrição (para não quebrar HTML)
-                let rawDesc = card.desc || 'Sem descrição detalhada.';
-                const descPreview = rawDesc.length > 120 ? rawDesc.substring(0, 120) + '…' : rawDesc;
-
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'card-item';
-                cardDiv.innerHTML = `
-                    <h3>📌 ${escapeHtml(card.name)}</h3>
-                    <div class="card-desc">${escapeHtml(descPreview)}</div>
-                    <a href="${card.url}" target="_blank" class="card-link">🔗 Ver no Trello &nbsp;→</a>
-                `;
-                cardsContainer.appendChild(cardDiv);
+                if (!cardsByList[card.idList]) cardsByList[card.idList] = [];
+                cardsByList[card.idList].push(card);
             });
+
+            // Montar HTML
+            let html = '<div class="kanban-board">';
+            for (const list of activeLists) {
+                const listCards = cardsByList[list.id] || [];
+                html += `
+                    <div class="kanban-column">
+                        <div class="column-header">
+                            <span class="column-title">📌 ${escapeHtml(list.name)}</span>
+                            <span class="card-count">${listCards.length}</span>
+                        </div>
+                        <div class="cards-container">
+                `;
+                if (listCards.length === 0) {
+                    html += '<div class="empty-column">Nenhum card nesta etapa</div>';
+                } else {
+                    listCards.forEach(card => {
+                        // Extrair labels
+                        const labelsHtml = (card.labels || []).map(label => 
+                            `<span class="label-badge" style="background: ${label.color ? '#'+label.color : '#4b5563'}">${escapeHtml(label.name || 'sem nome')}</span>`
+                        ).join('');
+                        const descPreview = (card.desc || '').substring(0, 100) + (card.desc && card.desc.length > 100 ? '…' : '');
+                        html += `
+                            <div class="card-item">
+                                <div class="card-title">
+                                    <a href="${card.url}" target="_blank">📌 ${escapeHtml(card.name)}</a>
+                                </div>
+                                ${labelsHtml ? `<div class="labels">${labelsHtml}</div>` : ''}
+                                <div class="card-desc-preview">${escapeHtml(descPreview)}</div>
+                            </div>
+                        `;
+                    });
+                }
+                html += `</div></div>`;
+            }
+            html += '</div>';
+            kanbanContainer.innerHTML = html;
         } catch (err) {
             console.error(err);
-            cardsContainer.innerHTML = '<div class="empty-message">⚠️ Erro ao carregar a fila. Tente novamente mais tarde.</div>';
+            kanbanContainer.innerHTML = '<div style="text-align: center; padding: 2rem; color: #f87171;">❌ Erro ao carregar o quadro. Tente novamente mais tarde.</div>';
         }
     }
 
@@ -386,11 +414,9 @@
         });
     }
 
-    // Carrega automaticamente ao abrir a página
-    carregarCards();
-    // Recarrega a lista a cada 45 segundos (opcional, mantém fresco)
-    setInterval(carregarCards, 45000);
+    // Recarregar a cada 30 segundos (opcional)
+    carregarKanban();
+    setInterval(carregarKanban, 30000);
 </script>
-
 </body>
 </html>
