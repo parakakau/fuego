@@ -2,126 +2,395 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fuego Entretenimento - Central de Demandas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Fuego Entretenimento • Central de Demandas</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f4f4f4; }
-        h1, h2 { color: #333; }
-        form { background: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        label { font-weight: bold; display: block; margin-top: 10px; }
-        input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background: #0079bf; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin-top: 15px; cursor: pointer; }
-        button:hover { background: #005f8c; }
-        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 6px; border-left: 5px solid #0079bf; }
-        .card h3 { margin: 0 0 5px; }
-        .card p { margin: 5px 0; color: #555; }
-        #loading { display: none; color: #0079bf; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #0a0c10;
+            color: #eef2ff;
+            padding: 2rem 1.5rem;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Imagem / emoji de fundo (baixa opacidade) */
+        body::before {
+            content: "🔥";  /* ← Troque por um emoji ou remova para usar imagem PNG */
+            font-size: 28vw;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+        }
+
+        /* Se preferir usar uma imagem PNG, descomente as linhas abaixo e comente a linha do emoji:
+        body::before {
+            content: "";
+            background-image: url('https://SEU-LINK-DA-IMAGEM.png'); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: bottom right;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+        */
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Cabeçalho */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ffffff, #b3b3ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .header p {
+            color: #9ca3af;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Grid: formulário + lista */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+        }
+
+        /* Cards de formulário e lista */
+        .card-panel {
+            background: rgba(18, 22, 28, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            padding: 1.8rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease;
+        }
+        .card-panel:hover {
+            transform: translateY(-3px);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .panel-title {
+            font-size: 1.6rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-left: 4px solid #4f46e5;
+            padding-left: 1rem;
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 1.3rem;
+        }
+        label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #cbd5e1;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #11161f;
+            border: 1px solid #2d3a4a;
+            border-radius: 0.9rem;
+            color: #f1f5f9;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+        }
+        button {
+            background: #4f46e5;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        button:hover {
+            background: #6366f1;
+            transform: scale(0.98);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #a5b4fc;
+        }
+
+        /* Lista de cards (fila) */
+        .cards-list {
+            max-height: 550px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        .card-item {
+            background: rgba(12, 16, 22, 0.7);
+            border-left: 4px solid #4f46e5;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .card-item:hover {
+            background: #1c2532;
+            transform: translateX(4px);
+        }
+        .card-item h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #e2e8f0;
+        }
+        .card-desc {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-link {
+            font-size: 0.75rem;
+            color: #818cf8;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            margin-top: 0.3rem;
+        }
+        .card-link:hover {
+            color: #c7d2fe;
+            text-decoration: underline;
+        }
+        .empty-message {
+            text-align: center;
+            color: #6b7280;
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        /* scroll personalizado */
+        .cards-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .cards-list::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        .cards-list::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+
+        /* responsivo */
+        @media (max-width: 900px) {
+            body { padding: 1.2rem; }
+            .dashboard { grid-template-columns: 1fr; gap: 1.5rem; }
+            .header h1 { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
-    <h1>📝 Abrir nova demanda</h1>
-    <form id="demandaForm">
-        <label>Nome do Cliente *</label>
-        <input type="text" name="nome_cliente" required>
 
-        <label>Descrição da Tarefa *</label>
-        <textarea name="descricao" rows="3" required></textarea>
+<div class="container">
+    <div class="header">
+        <h1>🎞️ Fuego Entretenimento</h1>
+        <p>Central de demandas criativas • Acompanhamento em tempo real</p>
+    </div>
 
-        <label>Link do Material Bruto</label>
-        <input type="url" name="link_material" placeholder="https://...">
+    <div class="dashboard">
+        <!-- FORMULÁRIO -->
+        <div class="card-panel">
+            <div class="panel-title">
+                <span>📋</span> Abrir nova demanda
+            </div>
+            <form id="demandaForm">
+                <div class="form-group">
+                    <label>🧑‍🎤 Nome do Cliente *</label>
+                    <input type="text" name="nome_cliente" required placeholder="Ex: Michael, Cassiano...">
+                </div>
+                <div class="form-group">
+                    <label>📝 Descrição da Tarefa *</label>
+                    <textarea name="descricao" rows="3" required placeholder="Detalhe o que precisa ser feito..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>🔗 Link do Material Bruto</label>
+                    <input type="url" name="link_material" placeholder="https://drive.google.com, capcut...">
+                </div>
+                <div class="form-group">
+                    <label>📅 Data de Entrega Desejada</label>
+                    <input type="date" name="data_entrega">
+                </div>
+                <div class="form-group">
+                    <label>💬 Comentários</label>
+                    <textarea name="comentarios" rows="2" placeholder="Observações adicionais..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>🎨 Tipo de serviço</label>
+                    <select name="pergunta">
+                        <option value="Opção 1">🎥 Edição de vídeo</option>
+                        <option value="Opção 2">📸 Fotografia</option>
+                        <option value="Opção 3">🎨 Design / Motion</option>
+                        <option value="Outro">⚙️ Outro (especificar na descrição)</option>
+                    </select>
+                </div>
+                <button type="submit">
+                    <span>🚀</span> Enviar demanda
+                </button>
+                <div id="loading">Enviando demanda... ⏳</div>
+            </form>
+        </div>
 
-        <label>Data de Entrega Desejada</label>
-        <input type="date" name="data_entrega">
+        <!-- LISTA DA FILA (cards) -->
+        <div class="card-panel">
+            <div class="panel-title">
+                <span>⏳</span> Fila de demandas ativas
+            </div>
+            <div id="cardsList" class="cards-list">
+                <div class="empty-message">Carregando demandas...</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <label>Comentários</label>
-        <textarea name="comentarios" rows="2"></textarea>
+<script>
+    // ⚠️ IMPORTANTE: Substitua pela URL do seu Web App (Google Apps Script)
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE7C70uZrFwx8PJEZw_3ao0OZz0l3WaMBy9Ma4Lba2RMGAwWoncU9s8toZ_vrbHWtbLQ/exec';  
 
-        <label>Tipo de serviço</label>
-        <select name="pergunta">
-            <option value="Opção 1">Edição de vídeo</option>
-            <option value="Opção 2">Fotografia</option>
-            <option value="Opção 3">Design</option>
-            <option value="Outro">Outro</option>
-        </select>
+    const form = document.getElementById('demandaForm');
+    const loadingDiv = document.getElementById('loading');
+    const cardsContainer = document.getElementById('cardsList');
 
-        <button type="submit">Enviar demanda</button>
-        <div id="loading">Enviando...</div>
-    </form>
+    // Envio do formulário (POST)
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        loadingDiv.style.display = 'block';
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
 
-    <h2>📋 Fila de demandas</h2>
-    <div id="cardsList"></div>
-
-    <script>
-        // Substitua pela URL do seu Web App (publicado)
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwE7C70uZrFwx8PJEZw_3ao0OZz0l3WaMBy9Ma4Lba2RMGAwWoncU9s8toZ_vrbHWtbLQ/exec';
-
-        const form = document.getElementById('demandaForm');
-        const loading = document.getElementById('loading');
-        const cardsDiv = document.getElementById('cardsList');
-
-        // Envio do formulário
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            loading.style.display = 'block';
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: params
-                });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    alert('✅ Demanda criada com sucesso!');
-                    form.reset();
-                    carregarCards();
-                } else {
-                    alert('❌ Erro: ' + JSON.stringify(result));
-                }
-            } catch (err) {
-                alert('Erro de conexão: ' + err.message);
-            } finally {
-                loading.style.display = 'none';
-            }
-        };
-
-        // Carregar cards da fila
-        async function carregarCards() {
-            cardsDiv.innerHTML = '<p>Carregando...</p>';
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=cards`);
-                const cards = await response.json();
-                if (cards.length === 0) {
-                    cardsDiv.innerHTML = '<p>Nenhuma demanda no momento.</p>';
-                    return;
-                }
-                cardsDiv.innerHTML = '';
-                cards.forEach(card => {
-                    const cardEl = document.createElement('div');
-                    cardEl.className = 'card';
-                    cardEl.innerHTML = `
-                        <h3>${escapeHtml(card.name)}</h3>
-                        <p><strong>Descrição:</strong> ${escapeHtml(card.desc.substring(0, 150))}...</p>
-                        <p><strong>Link:</strong> <a href="${card.url}" target="_blank">Ver no Trello</a></p>
-                    `;
-                    cardsDiv.appendChild(cardEl);
-                });
-            } catch (err) {
-                cardsDiv.innerHTML = '<p>Erro ao carregar a fila.</p>';
-            }
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
+        try {
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: params
             });
+            const result = await response.json();
+            if (result.status === 'success') {
+                alert('✅ Demanda criada com sucesso! O card aparecerá na fila em instantes.');
+                form.reset();
+                carregarCards();  // recarrega a fila
+            } else {
+                alert('❌ Erro ao criar: ' + JSON.stringify(result));
+            }
+        } catch (err) {
+            alert('⚠️ Falha na conexão: ' + err.message);
+        } finally {
+            loadingDiv.style.display = 'none';
         }
+    };
 
-        carregarCards();
-    </script>
+    // Buscar cards da fila (GET?action=cards)
+    async function carregarCards() {
+        cardsContainer.innerHTML = '<div class="empty-message">⏳ Atualizando lista...</div>';
+        try {
+            const response = await fetch(`${SCRIPT_URL}?action=cards`);
+            const cards = await response.json();
+
+            if (!cards.length) {
+                cardsContainer.innerHTML = '<div class="empty-message">✨ Nenhuma demanda ativa no momento. Crie uma nova!</div>';
+                return;
+            }
+
+            // Limita a última meia dúzia se quiser, mas exibe todas
+            cardsContainer.innerHTML = '';
+            cards.forEach(card => {
+                // Limpeza básica da descrição (para não quebrar HTML)
+                let rawDesc = card.desc || 'Sem descrição detalhada.';
+                const descPreview = rawDesc.length > 120 ? rawDesc.substring(0, 120) + '…' : rawDesc;
+
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card-item';
+                cardDiv.innerHTML = `
+                    <h3>📌 ${escapeHtml(card.name)}</h3>
+                    <div class="card-desc">${escapeHtml(descPreview)}</div>
+                    <a href="${card.url}" target="_blank" class="card-link">🔗 Ver no Trello &nbsp;→</a>
+                `;
+                cardsContainer.appendChild(cardDiv);
+            });
+        } catch (err) {
+            console.error(err);
+            cardsContainer.innerHTML = '<div class="empty-message">⚠️ Erro ao carregar a fila. Tente novamente mais tarde.</div>';
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Carrega automaticamente ao abrir a página
+    carregarCards();
+    // Recarrega a lista a cada 45 segundos (opcional, mantém fresco)
+    setInterval(carregarCards, 45000);
+</script>
+
 </body>
 </html>
