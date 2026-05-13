@@ -725,9 +725,10 @@
             }
             let commentsHtml = '';
             comments.forEach(com => {
-                const author = com.memberCreator ? com.memberCreator.fullName : 'Anônimo';
                 let text = com.data.text || '';
-                commentsHtml += `<div class="comment"><div class="comment-author">${escapeHtml(author)}</div><div class="comment-text">${escapeHtml(text)}</div></div>`;
+                // Remove qualquer nome de autor que venha da API (não exibimos o autor, só o texto)
+                // O texto já contém o nome do cliente no formato "**Fulano:** comentário"
+                commentsHtml += `<div class="comment"><div class="comment-text">${escapeHtml(text)}</div></div>`;
             });
             if (comments.length === 0) commentsHtml = '<div style="color:#64748b;">Nenhum comentário ainda.</div>';
             modalContent.innerHTML = `
